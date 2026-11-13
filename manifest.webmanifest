@@ -1,0 +1,14 @@
+{
+  "name": "ABC Game",
+  "short_name": "ABC Game",
+  "description": "A friendly game to help kids learn their ABCs.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fff7e6",
+  "theme_color": "#ffb703",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

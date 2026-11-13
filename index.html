@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ABC Game</title>
+  <meta name="description" content="A friendly game to help kids learn their ABCs.">
+  <meta name="theme-color" content="#ffb703">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ABC Game">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Andika:wght@700&family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <main id="app">
+
+    <!-- Home -->
+    <section id="home" class="screen active">
+      <h1 class="title" aria-label="ABC Fun">
+        <span style="--c:var(--pink)">A</span><span style="--c:var(--blue)">B</span><span style="--c:var(--orange)">C</span>
+        <small>Fun!</small>
+      </h1>
+      <div class="home-buttons">
+        <button class="big-btn" data-go="explore" style="--c:var(--blue)"><span class="ico" aria-hidden="true">🔤</span>Explore</button>
+        <button class="big-btn" data-go="find" style="--c:var(--pink)"><span class="ico" aria-hidden="true">🔍</span>Find the Letter</button>
+        <button class="big-btn" data-go="collection" style="--c:var(--teal)"><span class="ico" aria-hidden="true">🐾</span>My Animals</button>
+      </div>
+    </section>
+
+    <!-- Explore -->
+    <section id="explore" class="screen">
+      <header class="bar">
+        <button class="home-btn" data-go="home" aria-label="Home">🏠</button>
+        <h2>Explore</h2>
+      </header>
+      <div id="letter-grid" class="letter-grid"></div>
+      <div id="letter-detail" class="letter-detail" hidden>
+        <button id="prev-letter" class="arrow" aria-label="Previous letter">◀</button>
+        <button id="detail-card" class="detail-card" aria-label="Hear it again">
+          <span class="detail-letter"></span>
+          <span class="detail-emoji" aria-hidden="true"></span>
+          <span class="detail-word"></span>
+        </button>
+        <button id="next-letter" class="arrow" aria-label="Next letter">▶</button>
+        <button id="close-detail" class="pill">All letters</button>
+      </div>
+    </section>
+
+    <!-- Find the Letter -->
+    <section id="find" class="screen">
+      <header class="bar">
+        <button class="home-btn" data-go="home" aria-label="Home">🏠</button>
+        <h2>Find the Letter</h2>
+        <div class="case-toggle" role="group" aria-label="Letter style">
+          <button data-case="upper">ABC</button>
+          <button data-case="lower">abc</button>
+        </div>
+      </header>
+
+      <div id="case-chooser" class="case-chooser">
+        <p>Pick your letters!</p>
+        <div class="case-options">
+          <button class="tile case-big" data-case="upper" style="--c:var(--blue)" aria-label="Big letters">ABC</button>
+          <button class="tile case-big" data-case="lower" style="--c:var(--purple)" aria-label="Little letters">abc</button>
+        </div>
+      </div>
+
+      <div id="game" class="game" hidden>
+        <div class="reward">
+          <div id="reveal" class="reveal" aria-label="Mystery animal"></div>
+          <div id="dots" class="dots" aria-hidden="true"></div>
+        </div>
+        <div class="play">
+          <button id="prompt" class="prompt"><span aria-hidden="true">🔊</span> <span id="prompt-text">Listen</span></button>
+          <div id="choices" class="choices"></div>
+        </div>
+      </div>
+
+      <div id="complete" class="complete" hidden>
+        <div id="complete-animal" class="complete-animal" aria-hidden="true"></div>
+        <p id="complete-text"></p>
+        <p id="complete-all" class="banner" hidden>🎉 You found every animal! 🎉</p>
+        <button id="play-again" class="big-btn" style="--c:var(--pink)">Play again</button>
+        <button class="pill" data-go="collection">See my animals</button>
+      </div>
+    </section>
+
+    <!-- My Animals -->
+    <section id="collection" class="screen">
+      <header class="bar">
+        <button class="home-btn" data-go="home" aria-label="Home">🏠</button>
+        <h2>My Animals</h2>
+      </header>
+      <p id="collection-count" class="count"></p>
+      <p id="all-done" class="banner" hidden>🎉 You found every animal! 🎉</p>
+      <div id="animal-grid" class="animal-grid"></div>
+    </section>
+
+  </main>
+  <div id="fx" aria-hidden="true"></div>
+</body>
+</html>

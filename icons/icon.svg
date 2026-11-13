@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#ffb703"/>
+  <g font-family="Arial Rounded MT Bold, Arial, sans-serif" font-weight="900" font-size="200" text-anchor="middle">
+    <text x="132" y="320" fill="#ef476f" transform="rotate(-8 132 260)">A</text>
+    <text x="256" y="320" fill="#219ebc">B</text>
+    <text x="380" y="320" fill="#ffffff" transform="rotate(8 380 260)">C</text>
+  </g>
+</svg>
