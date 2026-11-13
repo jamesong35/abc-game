@@ -79,11 +79,15 @@ export function current() {
   return { animal: byId(state.current.id), pieces: [...state.current.pieces] };
 }
 
+// Piece 0 is the center, which gives the animal away, so it's always revealed last.
+const CENTER = 0;
+
 // Reveal one more piece. Returns which piece, and whether the animal is done.
 export function addPiece() {
   const { animal, pieces } = current();
   const hidden = [...Array(PIECES).keys()].filter((i) => !pieces.includes(i));
-  const index = randomItem(hidden);
+  const corners = hidden.filter((i) => i !== CENTER);
+  const index = randomItem(corners.length ? corners : hidden);
   state.current.pieces.push(index);
 
   let complete = false;
@@ -109,7 +113,8 @@ export const debug = {
   },
   setPieces(count) {
     current();
-    state.current.pieces = [...Array(Math.min(count, PIECES - 1)).keys()];
+    // Corners first, matching the real reveal order.
+    state.current.pieces = [...Array(Math.min(count, PIECES - 1)).keys()].map((i) => i + 1);
     save();
   },
   reset() {
