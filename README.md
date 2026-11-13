@@ -8,6 +8,15 @@ A web-based game to help kids learn their ABCs. Designed for tablets, phones, an
 
 Plain HTML, CSS and JavaScript with no build step. Speech uses the browser's built-in text-to-speech. Progress is saved in the browser on each device.
 
+## Getting a friendlier voice
+
+The game automatically uses the most natural English voice on each device. Downloading a better voice makes a big difference:
+
+- **iPhone / iPad:** Settings → Accessibility → Spoken Content → Voices → English. Download a **Premium** or **Enhanced** voice, such as **Ava (Premium)** or **Zoe (Premium)**. Then close and reopen the game.
+- **Mac:** System Settings → Accessibility → Spoken Content → System Voice → Manage Voices, then download the same voices.
+- **Android:** Settings → Accessibility → Text-to-speech output. Choose Google's engine and install a high-quality English voice.
+- **Windows:** Microsoft Edge has natural voices (Aria, Jenny, Ana) built in; they need an internet connection.
+
 ## Run locally
 
 ```bash
