@@ -17,7 +17,7 @@ function go(name) {
   if (name === 'find') enterFind();
   if (name === 'collection') {
     const n = renderCollection();
-    say(n ? `You have ${n} ${n === 1 ? 'animal' : 'animals'}!` : 'Play Find the Letter to find animals!');
+    say(n ? `You have ${n} ${n === 1 ? 'critter' : 'critters'}!` : 'Play Find the Letter to find critters!');
   }
 }
 

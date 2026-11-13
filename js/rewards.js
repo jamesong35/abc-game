@@ -1,37 +1,26 @@
-// Mystery animals: each correct answer reveals one piece. Five pieces
-// completes the animal and adds it to the collection.
+// Mystery critters: each correct answer reveals one piece. Five pieces
+// completes the critter and adds it to the collection.
+//
+// A family's first form is found first. Each time that family comes up
+// again, the next form is the reward, so the critter "evolves".
+import { CREATURES, RARITY, FAMILY_COUNT, byId } from './creatures.js';
+
 export const PIECES = 5;
+// Piece 0 is the center, which gives the critter away, so it's always revealed last.
+const CENTER = 0;
 
-export const ANIMALS = [
-  { id: 'lion', name: 'Lion', emoji: '🦁' },
-  { id: 'elephant', name: 'Elephant', emoji: '🐘' },
-  { id: 'giraffe', name: 'Giraffe', emoji: '🦒' },
-  { id: 'zebra', name: 'Zebra', emoji: '🦓' },
-  { id: 'tiger', name: 'Tiger', emoji: '🐅' },
-  { id: 'monkey', name: 'Monkey', emoji: '🐒' },
-  { id: 'kangaroo', name: 'Kangaroo', emoji: '🦘' },
-  { id: 'camel', name: 'Camel', emoji: '🐫' },
-  { id: 'llama', name: 'Llama', emoji: '🦙' },
-  { id: 'sloth', name: 'Sloth', emoji: '🦥' },
-  { id: 'panda', name: 'Panda', emoji: '🐼' },
-  { id: 'koala', name: 'Koala', emoji: '🐨' },
-  { id: 'rabbit', name: 'Rabbit', emoji: '🐇' },
-  { id: 'hedgehog', name: 'Hedgehog', emoji: '🦔' },
-  { id: 'squirrel', name: 'Squirrel', emoji: '🐿️' },
-  { id: 'owl', name: 'Owl', emoji: '🦉' },
-  { id: 'parrot', name: 'Parrot', emoji: '🦜' },
-  { id: 'flamingo', name: 'Flamingo', emoji: '🦩' },
-  { id: 'penguin', name: 'Penguin', emoji: '🐧' },
-  { id: 'turtle', name: 'Turtle', emoji: '🐢' },
-  { id: 'crocodile', name: 'Crocodile', emoji: '🐊' },
-  { id: 'dolphin', name: 'Dolphin', emoji: '🐬' },
-  { id: 'octopus', name: 'Octopus', emoji: '🐙' },
-  { id: 'shark', name: 'Shark', emoji: '🦈' },
-];
-
-const KEY = 'abcgame.rewards.v1';
-export const byId = (id) => ANIMALS.find((a) => a.id === id);
+const KEY = 'abcgame.critters.v1';
 const randomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+function weightedPick(list) {
+  const total = list.reduce((sum, c) => sum + RARITY[c.rarity].weight, 0);
+  let r = Math.random() * total;
+  for (const c of list) {
+    r -= RARITY[c.rarity].weight;
+    if (r < 0) return c;
+  }
+  return list[list.length - 1];
+}
 
 function validCurrent(c) {
   return (
@@ -44,15 +33,11 @@ function validCurrent(c) {
 function load() {
   try {
     const s = JSON.parse(localStorage.getItem(KEY));
-    if (s && typeof s.collection === 'object' && s.collection) {
-      return {
-        current: validCurrent(s.current) ? s.current : null,
-        collection: s.collection,
-        lastId: s.lastId || null,
-      };
+    if (s && typeof s.found === 'object' && s.found) {
+      return { current: validCurrent(s.current) ? s.current : null, found: s.found, lastId: s.lastId || null };
     }
   } catch { /* storage unavailable or corrupt: start fresh */ }
-  return { current: null, collection: {}, lastId: null };
+  return { current: null, found: {}, lastId: null };
 }
 
 let state = load();
@@ -61,53 +46,61 @@ function save() {
   try { localStorage.setItem(KEY, JSON.stringify(state)); } catch { /* ignore */ }
 }
 
-export const allFound = () => ANIMALS.every((a) => state.collection[a.id] > 0);
-export const collection = () => ({ ...state.collection });
+export const allFound = () => CREATURES.every((c) => state.found[c.id] > 0);
+export const found = () => ({ ...state.found });
 
-function pickNext() {
-  const notFound = ANIMALS.filter((a) => !state.collection[a.id]);
-  const pool = notFound.length ? notFound : ANIMALS.filter((a) => a.id !== state.lastId);
-  return randomItem(pool);
+// The next form each family can give: its first form not found yet.
+function nextForms() {
+  const next = [];
+  for (let f = 0; f < FAMILY_COUNT; f++) {
+    const form = CREATURES.find((c) => c.family === f && !state.found[c.id]);
+    if (form) next.push(form);
+  }
+  return next;
 }
 
-// The animal being revealed right now (starts a new one if needed).
+function pickNext() {
+  const next = nextForms();
+  if (next.length) return weightedPick(next);
+  // Everything found: any critter can come again (shown as ×2, ×3…).
+  return weightedPick(CREATURES.filter((c) => c.id !== state.lastId));
+}
+
+// The critter being revealed right now (starts a new one if needed).
 export function current() {
   if (!state.current) {
     state.current = { id: pickNext().id, pieces: [] };
     save();
   }
-  return { animal: byId(state.current.id), pieces: [...state.current.pieces] };
+  return { creature: byId(state.current.id), pieces: [...state.current.pieces] };
 }
 
-// Piece 0 is the center, which gives the animal away, so it's always revealed last.
-const CENTER = 0;
-
-// Reveal one more piece. Returns which piece, and whether the animal is done.
+// Reveal one more piece. Returns which piece, and whether the critter is done.
 export function addPiece() {
-  const { animal, pieces } = current();
+  const { creature, pieces } = current();
   const hidden = [...Array(PIECES).keys()].filter((i) => !pieces.includes(i));
   const corners = hidden.filter((i) => i !== CENTER);
   const index = randomItem(corners.length ? corners : hidden);
   state.current.pieces.push(index);
 
-  let complete = false;
-  let justFoundAll = false;
+  const result = { index, complete: false, creature, firstTime: false, justFoundAll: false };
   if (state.current.pieces.length >= PIECES) {
     const hadAll = allFound();
-    state.collection[animal.id] = (state.collection[animal.id] || 0) + 1;
-    state.lastId = animal.id;
+    result.firstTime = !state.found[creature.id];
+    state.found[creature.id] = (state.found[creature.id] || 0) + 1;
+    state.lastId = creature.id;
     state.current = null;
-    complete = true;
-    justFoundAll = !hadAll && allFound();
+    result.complete = true;
+    result.justFoundAll = !hadAll && allFound();
   }
   save();
-  return { index, complete, animal, justFoundAll };
+  return result;
 }
 
 // Testing helpers (used from the browser console).
 export const debug = {
-  collectAllBut(n = 1) {
-    ANIMALS.slice(0, ANIMALS.length - n).forEach((a) => { state.collection[a.id] ||= 1; });
+  findAllBut(n = 1) {
+    CREATURES.slice(0, CREATURES.length - n).forEach((c) => { state.found[c.id] ||= 1; });
     state.current = null;
     save();
   },
@@ -117,8 +110,14 @@ export const debug = {
     state.current.pieces = [...Array(Math.min(count, PIECES - 1)).keys()].map((i) => i + 1);
     save();
   },
+  setCurrent(id) {
+    if (!byId(id)) return 'unknown critter';
+    state.current = { id, pieces: [] };
+    save();
+    return id;
+  },
   reset() {
-    state = { current: null, collection: {}, lastId: null };
+    state = { current: null, found: {}, lastId: null };
     save();
   },
 };

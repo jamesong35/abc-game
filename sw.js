@@ -1,6 +1,6 @@
 // Offline support. Network first (so updates show up right away),
 // falling back to the saved copy when there's no connection.
-const CACHE = 'abc-game-v1';
+const CACHE = 'abc-game-v2';
 const SHELL = [
   './',
   'index.html',
@@ -14,6 +14,8 @@ const SHELL = [
   'js/find-game.js',
   'js/rewards.js',
   'js/collection.js',
+  'js/creatures.js',
+  'js/creature-art.js',
   'manifest.webmanifest',
   'icons/icon.svg',
 ];

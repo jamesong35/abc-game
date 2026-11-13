@@ -3,6 +3,8 @@ import { say, speechAvailable } from './speech.js';
 import { chime, boop, fanfare } from './sounds.js';
 import { confetti, replay } from './fx.js';
 import * as rewards from './rewards.js';
+import { TYPES, RARITY, previousForm, numberLabel } from './creatures.js';
+import { creatureSVG } from './creature-art.js';
 
 const $ = (id) => document.getElementById(id);
 const CASE_KEY = 'abcgame.case';
@@ -34,7 +36,6 @@ function saveCase() {
 const shown = (L) => (letterCase === 'lower' ? L.toLowerCase() : L);
 const sizeWord = () => (letterCase === 'lower' ? 'little' : 'big');
 const playing = () => $('find').classList.contains('active') && !$('game').hidden;
-const article = (name) => (/^[AEIOU]/i.test(name) ? 'an' : 'a');
 
 function later(fn, ms) {
   clearTimeout(timer);
@@ -153,7 +154,7 @@ function choose(btn) {
 }
 
 // The 5 reward pieces: a center square plus four L-shaped corners around it,
-// so every piece covers a visible part of the animal. (Percent coordinates.)
+// so every piece covers a visible part of the critter. (Percent coordinates.)
 const PIECE_SHAPES = [
   'polygon(25% 25%, 75% 25%, 75% 75%, 25% 75%)',                      // center
   'polygon(0 0, 50% 0, 50% 25%, 25% 25%, 25% 50%, 0 50%)',            // top left
@@ -162,25 +163,26 @@ const PIECE_SHAPES = [
   'polygon(0 50%, 25% 50%, 25% 75%, 50% 75%, 50% 100%, 0 100%)',      // bottom left
 ];
 
-// Draw the mystery animal: a black silhouette with the revealed pieces in color on top.
-// When an animal was just completed, show it fully before the celebration.
+// Draw the mystery critter: a black silhouette with the revealed pieces in color on top.
+// When a critter was just completed, show it fully before the celebration.
 function renderReveal(result) {
   const done = result?.complete;
-  const { animal, pieces } = done
-    ? { animal: result.animal, pieces: [...Array(rewards.PIECES).keys()] }
+  const { creature, pieces } = done
+    ? { creature: result.creature, pieces: [...Array(rewards.PIECES).keys()] }
     : rewards.current();
+  const art = creatureSVG(creature);
 
   const box = $('reveal');
   box.innerHTML = '';
   const sil = document.createElement('div');
   sil.className = 'layer sil';
-  sil.textContent = animal.emoji;
+  sil.innerHTML = art;
   box.append(sil);
 
   for (let i = 0; i < rewards.PIECES; i++) {
     const piece = document.createElement('div');
     piece.className = 'layer piece';
-    piece.textContent = animal.emoji;
+    piece.innerHTML = art;
     piece.style.clipPath = PIECE_SHAPES[i];
     if (pieces.includes(i)) piece.classList.add('on');
     if (result && result.index === i) piece.classList.add('pop');
@@ -194,20 +196,38 @@ function renderReveal(result) {
     if (i < pieces.length) d.className = 'on';
     dots.append(d);
   }
-  box.setAttribute('aria-label', `Mystery animal, ${pieces.length} of ${rewards.PIECES} pieces found`);
+  box.setAttribute('aria-label', `Mystery critter, ${pieces.length} of ${rewards.PIECES} pieces found`);
 }
 
-function celebrate({ animal, justFoundAll }) {
+function celebrate({ creature: c, firstTime, justFoundAll }) {
   if (!$('find').classList.contains('active')) return;
   $('game').hidden = true;
   $('complete').hidden = false;
+
+  const prev = firstTime ? previousForm(c) : null;
   const big = $('complete-animal');
-  big.textContent = animal.emoji;
+  big.innerHTML = prev
+    ? `<div class="evo-prev">${creatureSVG(prev)}</div><span class="evo-arrow" aria-hidden="true">➜</span><div class="evo-new">${creatureSVG(c)}</div>`
+    : `<div class="evo-new">${creatureSVG(c)}</div>`;
   replay(big, 'complete-animal');
-  $('complete-text').textContent = `You found ${article(animal.name)} ${animal.name}!`;
+
+  const headline = prev
+    ? `${prev.name} evolved into ${c.name}!`
+    : firstTime ? `You found ${c.name}!` : `You found another ${c.name}!`;
+  $('complete-text').textContent = headline;
+
+  const type = TYPES[c.type];
+  const rarity = c.rarity === 'common' ? '' : ` · ${'⭐'.repeat(RARITY[c.rarity].stars)} ${RARITY[c.rarity].label}!`;
+  const meta = $('complete-meta');
+  meta.textContent = `${numberLabel(c)} · ${type.icon} ${type.label} type${rarity}`;
+  meta.className = `meta ${c.rarity}`;
   $('complete-all').hidden = !justFoundAll;
+
   fanfare();
-  confetti(big, 40);
-  say(`You found ${article(animal.name)} ${animal.name}! It's in your collection now!` +
-    (justFoundAll ? ' Wow, you found every animal!' : ''));
+  confetti(big, c.rarity === 'common' ? 40 : 80);
+  let speech = prev ? `Whoa! ${headline}` : `${headline} It's in your collection now!`;
+  if (c.rarity === 'rare') speech += " It's a rare critter!";
+  if (c.rarity === 'super') speech += ' Wow, a super rare critter!';
+  if (justFoundAll) speech += ' You found every critter!';
+  say(speech);
 }

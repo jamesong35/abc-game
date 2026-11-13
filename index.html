@@ -29,7 +29,7 @@
       <div class="home-buttons">
         <button class="big-btn" data-go="explore" style="--c:var(--blue)"><span class="ico" aria-hidden="true">🔍</span>Explore</button>
         <button class="big-btn" data-go="find" style="--c:var(--pink)"><span class="ico" aria-hidden="true">▶️</span>Find the Letter</button>
-        <button class="big-btn" data-go="collection" style="--c:var(--teal)"><span class="ico" aria-hidden="true">🐾</span>My Animals</button>
+        <button class="big-btn" data-go="collection" style="--c:var(--teal)"><span class="ico" aria-hidden="true">🐾</span>My Critters</button>
       </div>
     </section>
 
@@ -77,7 +77,7 @@
           <div id="choices" class="choices"></div>
         </div>
         <div class="reward">
-          <div id="reveal" class="reveal" aria-label="Mystery animal"></div>
+          <div id="reveal" class="reveal" aria-label="Mystery critter"></div>
           <div id="dots" class="dots" aria-hidden="true"></div>
         </div>
       </div>
@@ -85,9 +85,10 @@
       <div id="complete" class="complete" hidden>
         <div id="complete-animal" class="complete-animal" aria-hidden="true"></div>
         <p id="complete-text"></p>
-        <p id="complete-all" class="banner" hidden>🎉 You found every animal! 🎉</p>
+        <p id="complete-meta" class="meta"></p>
+        <p id="complete-all" class="banner" hidden>🎉 You found every critter! 🎉</p>
         <button id="play-again" class="big-btn" style="--c:var(--pink)">Play again</button>
-        <button class="pill" data-go="collection">See my animals</button>
+        <button class="pill" data-go="collection">See my critters</button>
       </div>
     </section>
 
@@ -95,10 +96,10 @@
     <section id="collection" class="screen">
       <header class="bar">
         <button class="home-btn" data-go="home" aria-label="Home">🏠</button>
-        <h2>My Animals</h2>
+        <h2>My Critters</h2>
       </header>
       <p id="collection-count" class="count"></p>
-      <p id="all-done" class="banner" hidden>🎉 You found every animal! 🎉</p>
+      <p id="all-done" class="banner" hidden>🎉 You found every critter! 🎉</p>
       <div id="animal-grid" class="animal-grid"></div>
     </section>
 

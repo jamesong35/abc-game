@@ -1,29 +1,31 @@
-import { ANIMALS, collection } from './rewards.js';
+import { CREATURES, TYPES, RARITY, numberLabel } from './creatures.js';
+import { creatureSVG } from './creature-art.js';
+import { found } from './rewards.js';
 import { say } from './speech.js';
 import { replay } from './fx.js';
 
 const $ = (id) => document.getElementById(id);
 
 export function renderCollection() {
-  const found = collection();
+  const got = found();
   const grid = $('animal-grid');
   grid.innerHTML = '';
   let count = 0;
 
-  ANIMALS.forEach((a) => {
-    const times = found[a.id] || 0;
+  CREATURES.forEach((c) => {
+    const times = got[c.id] || 0;
     if (times) count++;
-    const card = document.createElement('button');
-    card.className = 'animal-card' + (times ? ' found' : '');
-    card.setAttribute('aria-label', times ? a.name : 'Mystery animal');
+    const type = TYPES[c.type];
 
-    const emoji = document.createElement('span');
-    emoji.className = 'animal-emoji';
-    emoji.textContent = a.emoji;
-    const name = document.createElement('span');
-    name.className = 'animal-name';
-    name.textContent = times ? a.name : '?';
-    card.append(emoji, name);
+    const card = document.createElement('button');
+    card.className = `critter-card ${times ? `found ${c.rarity}` : ''}`;
+    card.setAttribute('aria-label', times ? `${numberLabel(c)} ${c.name}` : `${numberLabel(c)} mystery critter`);
+    card.innerHTML = `
+      <span class="num">${numberLabel(c)}</span>
+      <span class="art">${creatureSVG(c)}</span>
+      <span class="critter-name"></span>
+      <span class="critter-meta">${times ? `${type.icon} ${'★'.repeat(RARITY[c.rarity].stars)}` : '&nbsp;'}</span>`;
+    card.querySelector('.critter-name').textContent = times ? c.name : '???';
 
     if (times > 1) {
       const badge = document.createElement('span');
@@ -34,16 +36,16 @@ export function renderCollection() {
 
     card.addEventListener('click', () => {
       if (times) {
-        say(`${a.name}!`);
+        say(`${c.name}! ${type.label} type.`);
         replay(card, 'bounce');
       } else {
-        say('Keep playing to find this animal!');
+        say('Keep playing to find this critter!');
       }
     });
     grid.append(card);
   });
 
-  $('collection-count').textContent = `${count} of ${ANIMALS.length} animals`;
-  $('all-done').hidden = count < ANIMALS.length;
+  $('collection-count').textContent = `${count} of ${CREATURES.length} critters`;
+  $('all-done').hidden = count < CREATURES.length;
   return count;
 }
