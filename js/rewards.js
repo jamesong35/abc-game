@@ -1,6 +1,6 @@
-// Mystery animals: each correct answer reveals one piece. Ten pieces
+// Mystery animals: each correct answer reveals one piece. Five pieces
 // completes the animal and adds it to the collection.
-export const PIECES = 10;
+export const PIECES = 5;
 
 export const ANIMALS = [
   { id: 'lion', name: 'Lion', emoji: '🦁' },
@@ -79,14 +79,11 @@ export function current() {
   return { animal: byId(state.current.id), pieces: [...state.current.pieces] };
 }
 
-// Reveal one more piece. `prefer` lists pieces that actually show part of the
-// animal, so those are revealed before empty corners.
-// Returns which piece, and whether the animal is done.
-export function addPiece(prefer = []) {
+// Reveal one more piece. Returns which piece, and whether the animal is done.
+export function addPiece() {
   const { animal, pieces } = current();
   const hidden = [...Array(PIECES).keys()].filter((i) => !pieces.includes(i));
-  const preferred = hidden.filter((i) => prefer.includes(i));
-  const index = randomItem(preferred.length ? preferred : hidden);
+  const index = randomItem(hidden);
   state.current.pieces.push(index);
 
   let complete = false;

@@ -3,7 +3,7 @@
 A web-based game to help kids learn their ABCs. Designed for tablets, phones, and computers.
 
 - **Explore**: tap a letter to see and hear it ("A is for Apple").
-- **Find the Letter**: listen and tap the right letter, in capitals (ABC) or lowercase (abc). Each correct answer reveals part of a mystery animal. Ten correct answers reveal the whole animal and add it to the collection.
+- **Find the Letter**: listen and tap the right letter, in capitals (ABC) or lowercase (abc). Each correct answer reveals part of a mystery animal. Five correct answers reveal the whole animal and add it to the collection.
 - **My Animals**: the collection of animals found so far.
 
 Plain HTML, CSS and JavaScript with no build step. Speech uses the browser's built-in text-to-speech. Progress is saved in the browser on each device.
@@ -29,6 +29,6 @@ Then open http://localhost:8000. (Opening `index.html` directly from the file sy
 
 In the browser console:
 
-- `abcDebug.setPieces(9)`: put the current mystery animal one answer from done
+- `abcDebug.setPieces(4)`: put the current mystery animal one answer from done
 - `abcDebug.collectAllBut(1)`: collect every animal but one
 - `abcDebug.reset()`: clear all progress

@@ -36,5 +36,5 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 
-// For testing from the browser console, e.g. abcDebug.setPieces(9)
+// For testing from the browser console, e.g. abcDebug.setPieces(4)
 window.abcDebug = debug;

@@ -140,7 +140,7 @@ function choose(btn) {
   btn.classList.add('correct');
   chime();
   confetti(btn);
-  const result = rewards.addPiece(filledPieces(rewards.current().animal.emoji));
+  const result = rewards.addPiece();
   renderReveal(result);
 
   if (result.complete) {
@@ -152,36 +152,15 @@ function choose(btn) {
   }
 }
 
-// Which of the 5×2 pieces contain a meaningful part of the picture.
-// Found by drawing the emoji on a small canvas and counting painted pixels.
-const fillCache = new Map();
-function filledPieces(emoji) {
-  if (fillCache.has(emoji)) return fillCache.get(emoji);
-  let result = [];
-  try {
-    const size = 200;
-    const canvas = document.createElement('canvas');
-    canvas.width = canvas.height = size;
-    const g = canvas.getContext('2d', { willReadFrequently: true });
-    g.font = `${size * 0.78}px sans-serif`;
-    g.textAlign = 'center';
-    g.textBaseline = 'middle';
-    g.fillText(emoji, size / 2, size / 2);
-    const data = g.getImageData(0, 0, size, size).data;
-    const counts = new Array(rewards.PIECES).fill(0);
-    for (let y = 0; y < size; y++) {
-      for (let x = 0; x < size; x++) {
-        if (data[(y * size + x) * 4 + 3] > 40) {
-          counts[Math.floor(y / (size / 2)) * 5 + Math.floor(x / (size / 5))]++;
-        }
-      }
-    }
-    const cell = (size / 5) * (size / 2);
-    result = counts.map((n, i) => (n / cell > 0.08 ? i : -1)).filter((i) => i >= 0);
-  } catch { /* canvas unavailable: fall back to any piece */ }
-  fillCache.set(emoji, result);
-  return result;
-}
+// The 5 reward pieces: a center square plus four L-shaped corners around it,
+// so every piece covers a visible part of the animal. (Percent coordinates.)
+const PIECE_SHAPES = [
+  'polygon(25% 25%, 75% 25%, 75% 75%, 25% 75%)',                      // center
+  'polygon(0 0, 50% 0, 50% 25%, 25% 25%, 25% 50%, 0 50%)',            // top left
+  'polygon(50% 0, 100% 0, 100% 50%, 75% 50%, 75% 25%, 50% 25%)',      // top right
+  'polygon(100% 50%, 100% 100%, 50% 100%, 50% 75%, 75% 75%, 75% 50%)', // bottom right
+  'polygon(0 50%, 25% 50%, 25% 75%, 50% 75%, 50% 100%, 0 100%)',      // bottom left
+];
 
 // Draw the mystery animal: a black silhouette with the revealed pieces in color on top.
 // When an animal was just completed, show it fully before the celebration.
@@ -199,13 +178,10 @@ function renderReveal(result) {
   box.append(sil);
 
   for (let i = 0; i < rewards.PIECES; i++) {
-    const col = i % 5;
-    const row = Math.floor(i / 5);
     const piece = document.createElement('div');
     piece.className = 'layer piece';
     piece.textContent = animal.emoji;
-    piece.style.clipPath =
-      `inset(${row * 50}% ${100 - (col + 1) * 20}% ${100 - (row + 1) * 50}% ${col * 20}%)`;
+    piece.style.clipPath = PIECE_SHAPES[i];
     if (pieces.includes(i)) piece.classList.add('on');
     if (result && result.index === i) piece.classList.add('pop');
     box.append(piece);
