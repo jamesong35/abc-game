@@ -99,7 +99,14 @@ function newRound() {
     const b = document.createElement('button');
     b.className = 'tile choice';
     b.style.setProperty('--c', TILE_COLORS[i]);
-    b.textContent = shown(L);
+    const letter = document.createElement('span');
+    letter.className = 'choice-letter';
+    letter.textContent = shown(L);
+    const pic = document.createElement('span');
+    pic.className = 'choice-emoji';
+    pic.setAttribute('aria-hidden', 'true');
+    pic.textContent = LETTERS.find((l) => l.letter === L).emoji;
+    b.append(letter, pic);
     b.dataset.letter = L;
     b.setAttribute('aria-label', `${sizeWord()} ${L}`);
     b.addEventListener('click', () => choose(b));
