@@ -216,6 +216,40 @@ const BODIES = {
       <ellipse cx="96" cy="182" rx="20" ry="8" transform="rotate(16 96 182)" fill="${t.main}"/>`,
     spots: [[128, 128, 6], [152, 146, 5], [140, 120, 4]],
   },
+  // A dinosaur standing on two legs, with a big tail and tiny arms.
+  dino: {
+    head: { dx: -6, dy: -10, s: 0.85 }, round: true,
+    spikes: [[132, 106], [150, 124], [166, 144]],
+    back: (t) => `<path d="M118 136 Q168 146 196 186 Q150 190 104 174 Z" fill="${t.main}"/>`,
+    draw: (t) => `<ellipse cx="80" cy="182" rx="15" ry="9" fill="${t.main}"/>
+      <ellipse cx="118" cy="182" rx="15" ry="9" fill="${t.main}"/>
+      <ellipse cx="98" cy="142" rx="44" ry="42" fill="${t.main}"/>
+      <ellipse cx="92" cy="152" rx="26" ry="27" fill="${t.belly}" stroke="none"/>
+      <ellipse cx="62" cy="134" rx="6" ry="11" transform="rotate(50 62 134)" fill="${t.main}"/>
+      <ellipse cx="124" cy="132" rx="6" ry="11" transform="rotate(-50 124 132)" fill="${t.main}"/>`,
+    spots: [[120, 120, 6], [130, 150, 5], [70, 116, 4]],
+  },
+  // A round little bat with big scalloped wings.
+  bat: {
+    head: { dx: 0, dy: 26, s: 1.05 },
+    back: (t) => pair(`<path d="M70 110 Q42 64 6 80 Q16 98 10 118 Q26 112 30 130 Q42 120 50 140 Q60 126 74 134 Z" fill="${t.main}"/>
+      <path d="M66 108 L22 90 M64 118 L30 124 M66 126 L50 138" fill="none" stroke-width="2.5"/>`),
+    draw: (t) => `<ellipse cx="86" cy="178" rx="9" ry="7" fill="${t.main}"/>
+      <ellipse cx="114" cy="178" rx="9" ry="7" fill="${t.main}"/>
+      <circle cx="100" cy="122" r="54" fill="${t.main}"/>
+      <ellipse cx="100" cy="146" rx="32" ry="22" fill="${t.belly}" stroke="none"/>`,
+    spots: [[62, 108, 5], [138, 108, 5]],
+  },
+  // A flower in a pot: the face is the flower, on a stem with leaves.
+  potted: {
+    head: { dx: 0, dy: -12, s: 0.72 }, round: true,
+    draw: (t) => `<path d="M100 140 L100 96" fill="none" stroke-width="10"/>
+      <path d="M100 140 L100 96" fill="none" stroke="#5cc96b" stroke-width="5"/>
+      ${leaf(100, 124, -28, '#5cc96b')}${leaf(100, 120, -152, '#5cc96b')}
+      <path d="M64 146 L136 146 L126 188 L74 188 Z" fill="#d1773b"/>
+      <rect x="56" y="134" width="88" height="18" rx="7" fill="#e58a4e"/>`,
+    spots: [[84, 168, 4], [116, 168, 4], [100, 178, 4]], spotFill: () => '#fff1d6',
+  },
   // A long, curled-up dragon.
   serpent: {
     head: { dx: 0, dy: -14, s: 0.82 }, round: true,
@@ -306,8 +340,8 @@ export function creatureSVG(c) {
   if (has('dorsal')) back.push(B.dorsal ? B.dorsal(t) : `<path d="M78 66 Q98 22 126 68 Z" fill="${t.accent}"/>`);
   if (has('back-spikes')) {
     // Plates along the top of a four-legged body.
-    for (const x of [96, 120, 144]) {
-      const y = 134 - 36 * Math.sqrt(1 - ((x - 114) / 60) ** 2);
+    const plates = B.spikes || [96, 120, 144].map((x) => [x, 134 - 36 * Math.sqrt(1 - ((x - 114) / 60) ** 2)]);
+    for (const [x, y] of plates) {
       back.push(`<polygon points="${x - 11},${(y + 8).toFixed(1)} ${x},${(y - 18).toFixed(1)} ${x + 11},${(y + 8).toFixed(1)}" fill="${t.accent}"/>`);
     }
   }

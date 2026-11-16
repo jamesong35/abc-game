@@ -53,12 +53,12 @@ const WORD_FAMILIES = [
     { name: 'Honeyhum', extras: ['stripes', 'antennae', 'bug-wings'] },
     { name: 'Queenbuzz', extras: ['stripes', 'antennae', 'bug-wings', 'crown'] },
   ] },
-  { type: 'rock', rarity: 'rare', parts: { body: 'quad', tail: 'thin' }, forms: [
+  { type: 'rock', rarity: 'rare', parts: { body: 'dino' }, forms: [
     { name: 'Dinobit', extras: ['back-spikes'] },
     { name: 'Stompasaur', extras: ['back-spikes', 'horn'] },
     { name: 'Rexpaw', extras: ['back-spikes', 'horn', 'wide-mouth', 'spots'] },
   ] },
-  { type: 'bloom', rarity: 'rare', parts: { body: 'chibi' }, forms: [
+  { type: 'bloom', rarity: 'rare', parts: { body: 'potted' }, forms: [
     { name: 'Budling', extras: ['sprout'] },
     { name: 'Blossomette', extras: ['petals'] },
     { name: 'Bloomqueen', extras: ['petals', 'crown'] },
@@ -75,11 +75,11 @@ const WORD_FAMILIES = [
     { name: 'Squeakit', extras: ['whiskers'] },
     { name: 'Cheddarmouse', extras: ['whiskers', 'tuft', 'spots'] },
   ] },
-  { type: 'moon', rarity: 'rare', parts: { body: 'quad', ears: 'pointy', tail: 'fluffy' }, forms: [
+  { type: 'moon', rarity: 'rare', parts: { body: 'bat', ears: 'pointy' }, forms: [
     { name: 'Duskit', extras: ['moon-mark'] },
-    { name: 'Nightfox', extras: ['moon-mark', 'mane'] },
+    { name: 'Nightflap', extras: ['moon-mark', 'spots', 'tongue'] },
   ] },
-  { type: 'frost', rarity: 'common', parts: { body: 'seal' }, forms: [
+  { type: 'rock', rarity: 'common', parts: { body: 'seal' }, forms: [
     { name: 'Sealy', extras: ['whiskers'] },
     { name: 'Flipflop', extras: ['whiskers', 'spots'] },
   ] },
