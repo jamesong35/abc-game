@@ -1,4 +1,4 @@
-import { initExplore, resetExplore } from './explore.js';
+import { initExplore, enterExplore } from './explore.js';
 import { initFind, enterFind, leaveFind } from './find-game.js';
 import { renderCollection } from './collection.js';
 import { say, stopSpeech, unlockSpeech } from './speech.js';
@@ -10,12 +10,13 @@ function go(name, tab) {
   if (leaving?.id === 'find') leaveFind();
   stopSpeech();
 
-  // Find the Letter and Find the Word share the Find screen.
-  const screen = name === 'words' ? 'find' : name;
+  // The letter and word versions of Explore and Find share a screen.
+  const screen = { words: 'find', 'explore-words': 'explore' }[name] || name;
   document.querySelectorAll('.screen').forEach((s) => s.classList.toggle('active', s.id === screen));
   window.scrollTo(0, 0);
 
-  if (name === 'explore') { resetExplore(); say('Tap a letter!'); }
+  if (name === 'explore') enterExplore('letters');
+  if (name === 'explore-words') enterExplore('words');
   if (name === 'find') enterFind('letters');
   if (name === 'words') enterFind('words');
   if (name === 'collection') {

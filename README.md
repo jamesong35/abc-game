@@ -2,10 +2,12 @@
 
 A web-based game to help kids learn their ABCs. Designed for tablets, phones, and computers.
 
-- **Explore**: tap a letter to see and hear it ("A is for Apple").
-- **Find the Letter**: listen and tap the right letter, in capitals (ABC) or lowercase (abc). Each correct answer reveals part of a mystery critter. Five correct answers reveal the whole critter and add it to the collection.
-- **Find the Word**: listen and tap the right 3-letter word. Each set of 5 questions uses one word family (cat, hat, bat…), so the words differ only in their first letter. The word's picture appears after it's found. Sets reveal Word Critters, a separate collection.
-- **My Critters**: two collections of the game's own collectible critters: 31 Letter Critters and 50 Word Critters. Finding a family again evolves it into its next form. Critters have types (Fire, Water, Leaf…) and rarity (common, rare, super rare).
+The home page has three parts, each with a letters and a words version:
+
+- **Explore**: Letters shows A to Z; tap a letter to see and hear it ("A is for Apple"). Words shows the word families; tap one to step through its words ("Cat! C, A, T. Cat!").
+- **Play → Find the Letter**: listen and tap the right letter, in capitals (ABC) or lowercase (abc). Each correct answer reveals part of a mystery critter. Five correct answers reveal the whole critter and add it to the collection.
+- **Play → Find the Word**: listen and tap the right 3-letter word. Each set of 5 questions uses one word family (cat, hat, bat…), so the words differ only in their first letter. The word's picture appears after it's found. Sets reveal Word Critters, a separate collection.
+- **Collect**: two collections of the game's own collectible critters: 31 Letter Critters and 50 Word Critters. Finding a family again evolves it into its next form. Critters have types (Fire, Water, Leaf…) and rarity (common, rare, super rare).
 
 Plain HTML, CSS and JavaScript with no build step. Speech uses the browser's built-in text-to-speech. Progress is saved in the browser on each device.
 

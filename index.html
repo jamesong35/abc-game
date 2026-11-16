@@ -28,11 +28,28 @@
         <span style="--c:var(--pink)">A</span><span style="--c:var(--blue)">B</span><span style="--c:var(--orange)">C</span>
         <small>Fun!</small>
       </h1>
-      <div class="home-buttons">
-        <button class="big-btn" data-go="explore" style="--c:var(--blue)"><span class="ico" aria-hidden="true">🔍</span>Explore</button>
-        <button class="big-btn" data-go="find" style="--c:var(--pink)"><span class="ico" aria-hidden="true">▶️</span>Find the Letter</button>
-        <button class="big-btn" data-go="words" style="--c:var(--purple)"><span class="ico" aria-hidden="true">📖</span>Find the Word</button>
-        <button class="big-btn" data-go="collection" style="--c:var(--teal)"><span class="ico" aria-hidden="true">🐾</span>My Critters</button>
+      <div class="home-cards">
+        <div class="home-card" style="--c:var(--blue)">
+          <p class="home-card-head"><span class="ico" aria-hidden="true">🔍</span>Explore</p>
+          <div class="home-card-btns">
+            <button data-go="explore">Letters</button>
+            <button data-go="explore-words">Words</button>
+          </div>
+        </div>
+        <div class="home-card" style="--c:var(--pink)">
+          <p class="home-card-head"><span class="ico" aria-hidden="true">▶️</span>Play</p>
+          <div class="home-card-btns">
+            <button data-go="find">Find the Letter</button>
+            <button data-go="words">Find the Word</button>
+          </div>
+        </div>
+        <div class="home-card" style="--c:var(--teal)">
+          <p class="home-card-head"><span class="ico" aria-hidden="true">🐾</span>Collect</p>
+          <div class="home-card-btns">
+            <button data-go="collection" data-tab="letters">Letter Critters</button>
+            <button data-go="collection" data-tab="words">Word Critters</button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -40,7 +57,7 @@
     <section id="explore" class="screen">
       <header class="bar">
         <button class="home-btn" data-go="home" aria-label="Home">🏠</button>
-        <h2>Explore</h2>
+        <h2 id="explore-title">Explore</h2>
       </header>
       <div id="letter-grid" class="letter-grid"></div>
       <div id="letter-detail" class="letter-detail" hidden>
