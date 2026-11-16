@@ -119,11 +119,13 @@ function newRound() {
   $('prompt-text').innerHTML = speechAvailable()
     ? 'Listen'
     : `Find <span class="target">${shown(target)}</span>`;
-  later(sayTarget, 350);
+  later(() => sayTarget(true), 350);
 }
 
-function sayTarget() {
-  if (playing() && target) say(`Find the ${sizeWord()} letter ${target}!`);
+// The first time in a round: "Find the letter A!". After that, the Listen
+// button just says the letter.
+function sayTarget(full) {
+  if (playing() && target) say(full === true ? `Find the letter ${target}!` : `${target}!`);
 }
 
 function choose(btn) {
@@ -133,7 +135,7 @@ function choose(btn) {
   if (L !== target) {
     replay(btn, 'wrong');
     boop();
-    say(`That's the ${sizeWord()} letter ${L}. Try again!`);
+    say(`That's the letter ${L}. Try again!`);
     return;
   }
 
