@@ -34,7 +34,7 @@ function saveCase() {
 }
 
 const shown = (L) => (letterCase === 'lower' ? L.toLowerCase() : L);
-const sizeWord = () => (letterCase === 'lower' ? 'little' : 'big');
+const sizeWord = () => (letterCase === 'lower' ? 'lowercase' : 'capital');
 const playing = () => $('find').classList.contains('active') && !$('game').hidden;
 
 function later(fn, ms) {
@@ -63,7 +63,7 @@ export function enterFind() {
   $('game').hidden = true;
   $('case-chooser').hidden = false;
   updateCaseButtons();
-  say('Pick your letters!');
+  say('Pick capital letters or lowercase letters!');
 }
 
 export function leaveFind() {
