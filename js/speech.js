@@ -67,55 +67,20 @@ if (synth) {
 
 export const speechAvailable = () => !!synth;
 
-// Each new say() bumps this, so a pause-then-speak from earlier speech
-// doesn't start talking over newer speech.
-let token = 0;
-let pauseTimer = null;
-
-function utter(text) {
+export function say(text) {
   window.__lastSpoken = text; // handy for testing
+  if (!synth) return;
+  if (!voice) pickVoice();
+  synth.cancel();
   const u = new SpeechSynthesisUtterance(text);
   if (voice) u.voice = voice;
   u.lang = voice?.lang || 'en-US';
   u.rate = 0.9;
   u.pitch = 1.05;
   synth.speak(u);
-  return u;
-}
-
-export function say(text) {
-  token++;
-  clearTimeout(pauseTimer);
-  window.__lastSpoken = text;
-  if (!synth) return;
-  if (!voice) pickVoice();
-  synth.cancel();
-  utter(text);
-}
-
-// Say `first`, wait `pauseMs` after it finishes, then say `second`.
-export function sayWithPause(first, second, pauseMs = 1000) {
-  say(first);
-  if (!synth) return;
-  const mine = token;
-  let done = false;
-  const next = () => {
-    if (done || mine !== token) return;
-    done = true;
-    pauseTimer = setTimeout(() => { if (mine === token) utter(second); }, pauseMs);
-  };
-  // The last utterance queued is `first`; wait for it to end.
-  const queued = synth.pending || synth.speaking;
-  if (!queued) { next(); return; }
-  const poll = setInterval(() => {
-    if (mine !== token) { clearInterval(poll); return; }
-    if (!synth.speaking && !synth.pending) { clearInterval(poll); next(); }
-  }, 100);
 }
 
 export function stopSpeech() {
-  token++;
-  clearTimeout(pauseTimer);
   synth?.cancel();
 }
 

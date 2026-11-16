@@ -1,6 +1,6 @@
 import { LETTERS, TILE_COLORS } from './letters.js';
 import { WORD_FAMILIES } from './words.js';
-import { say, sayWithPause } from './speech.js';
+import { say } from './speech.js';
 import { replay } from './fx.js';
 
 const $ = (id) => document.getElementById(id);
@@ -86,9 +86,8 @@ function speak() {
   if (mode === 'words') {
     const { word } = WORD_FAMILIES[family].words[index];
     const Word = word[0].toUpperCase() + word.slice(1);
-    // Spell with capitals so the voice says the letter names, then pause a
-    // beat before saying the word again.
-    sayWithPause(`${Word}! ${word.toUpperCase().split('').join(', ')}.`, `${Word}!`, 500);
+    // Say the word, then spell it. Capitals make the voice say the letter names.
+    say(`${Word}. ${word.toUpperCase().split('').join(', ')}.`);
   } else {
     const { letter, word } = LETTERS[index];
     say(`${letter}! ${letter} is for ${word}.`);
