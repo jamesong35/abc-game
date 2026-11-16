@@ -18,61 +18,65 @@ export const RARITY = {
   super: { label: 'Super rare', weight: 1, stars: 3 },
 };
 
+// Body shapes: chibi (big head on a small body), blob, bulb (turnip), bug
+// (beetle shell), bird (egg), boulder, pear (big bottom), fish, quad (four
+// legs), star and serpent. A form can change its family's parts, so a critter
+// can change shape when it evolves.
 const FAMILIES = [
   { type: 'fire', rarity: 'common', parts: { body: 'chibi', ears: 'pointy', tail: 'fluffy' }, forms: [
     { name: 'Embit', extras: ['flame-tuft'] },
     { name: 'Flarefox', extras: ['flame-tuft', 'tail-flame'] },
-    { name: 'Blazetail', extras: ['flame-tuft', 'tail-flame', 'mane'] },
+    { name: 'Blazetail', extras: ['flame-tuft', 'tail-flame', 'mane', 'whiskers'] },
   ] },
   { type: 'water', rarity: 'common', parts: { body: 'blob' }, forms: [
     { name: 'Puddlet', extras: ['eye-bumps', 'wide-mouth'] },
     { name: 'Bubbletoad', extras: ['eye-bumps', 'wide-mouth', 'spots'] },
     { name: 'Splashking', extras: ['eye-bumps', 'wide-mouth', 'spots', 'crown'] },
   ] },
-  { type: 'leaf', rarity: 'common', parts: { body: 'chibi', ears: 'pointy', tail: 'thin' }, forms: [
+  { type: 'leaf', rarity: 'common', parts: { body: 'bulb' }, forms: [
     { name: 'Sproutle', extras: ['sprout'] },
-    { name: 'Leaflynx', extras: ['sprout', 'tail-leaf'] },
-    { name: 'Thornwhisk', extras: ['flower', 'tail-leaf', 'whiskers'] },
+    { name: 'Leaflynx', parts: { ears: 'pointy', tail: 'thin' }, extras: ['sprout', 'tail-leaf'] },
+    { name: 'Thornwhisk', parts: { ears: 'pointy', tail: 'thin' }, extras: ['flower', 'tail-leaf', 'whiskers', 'spots'] },
   ] },
-  { type: 'spark', rarity: 'common', parts: { body: 'blob' }, forms: [
+  { type: 'spark', rarity: 'common', parts: { body: 'bug' }, forms: [
     { name: 'Zipbug', extras: ['antennae'] },
     { name: 'Voltbeetle', extras: ['antennae', 'bug-wings'] },
     { name: 'Thunderhorn', extras: ['bug-wings', 'horn', 'spots'] },
   ] },
-  { type: 'sky', rarity: 'common', parts: { body: 'chibi', wings: true }, forms: [
-    { name: 'Fluffle', extras: ['beak', 'tuft'] },
-    { name: 'Breezewing', extras: ['beak', 'tuft'] },
-    { name: 'Skysoar', extras: ['beak', 'crest'] },
+  { type: 'sky', rarity: 'common', parts: { body: 'bird' }, forms: [
+    { name: 'Fluffle', extras: ['beak', 'tuft', 'wings'] },
+    { name: 'Breezewing', extras: ['beak', 'tuft', 'wings', 'tail-feathers'] },
+    { name: 'Skysoar', extras: ['beak', 'crest', 'wings-big', 'tail-feathers'] },
   ] },
-  { type: 'rock', rarity: 'rare', parts: { body: 'chibi', ears: 'long' }, forms: [
+  { type: 'rock', rarity: 'rare', parts: { body: 'boulder', ears: 'long' }, forms: [
     { name: 'Pebbo', extras: ['spots'] },
     { name: 'Boulderbun', extras: ['spots', 'spikes'] },
-    { name: 'Craghorn', extras: ['spikes', 'horn'] },
+    { name: 'Craghorn', parts: { ears: null }, extras: ['spikes', 'horn', 'spots'] },
   ] },
-  { type: 'frost', rarity: 'rare', parts: { body: 'chibi', ears: 'round' }, forms: [
+  { type: 'frost', rarity: 'rare', parts: { body: 'pear', ears: 'round' }, forms: [
     { name: 'Snowmite', extras: ['snowflake'] },
     { name: 'Frostpaw', extras: ['snowflake', 'scarf'] },
-    { name: 'Glacierbear', extras: ['snowflake', 'scarf', 'mane'] },
+    { name: 'Glacierbear', parts: { body: 'quad' }, extras: ['snowflake', 'spikes'] },
   ] },
-  { type: 'water', rarity: 'rare', parts: { body: 'blob' }, forms: [
+  { type: 'water', rarity: 'rare', parts: { body: 'fish' }, forms: [
     { name: 'Finny', extras: ['fins'] },
     { name: 'Wavefin', extras: ['fins', 'dorsal'] },
-    { name: 'Tidalray', extras: ['fins', 'dorsal', 'whiskers'] },
+    { name: 'Tidalray', extras: ['fins', 'dorsal', 'whiskers', 'spots'] },
   ] },
-  { type: 'leaf', rarity: 'rare', parts: { body: 'chibi', ears: 'round' }, forms: [
+  { type: 'leaf', rarity: 'rare', parts: { body: 'quad', ears: 'floppy' }, forms: [
     { name: 'Mossling', extras: ['trunk', 'sprout'] },
     { name: 'Mossmammoth', extras: ['trunk', 'tusks', 'flower'] },
   ] },
-  { type: 'spark', rarity: 'rare', parts: { body: 'chibi', ears: 'pointy', tail: 'fluffy' }, forms: [
+  { type: 'spark', rarity: 'rare', parts: { body: 'quad', ears: 'pointy', tail: 'fluffy' }, forms: [
     { name: 'Sparkpup', extras: ['bolt-mark'] },
     { name: 'Zapwolf', extras: ['bolt-mark', 'mane'] },
   ] },
-  { type: 'star', rarity: 'super', parts: { body: 'chibi', ears: 'pointy', tail: 'fluffy' }, forms: [
+  { type: 'star', rarity: 'super', parts: { body: 'star' }, forms: [
     { name: 'Twinklet', extras: ['star-mark'] },
-    { name: 'Nebulynx', extras: ['star-mark', 'mane', 'wings'] },
+    { name: 'Nebulynx', extras: ['star-mark', 'wings-big', 'spots', 'whiskers'] },
   ] },
-  { type: 'fire', rarity: 'super', parts: { body: 'chibi', wings: true }, forms: [
-    { name: 'Emberwing', extras: ['beak', 'crest', 'mane'] },
+  { type: 'fire', rarity: 'super', parts: { body: 'serpent' }, forms: [
+    { name: 'Emberwing', extras: ['crest', 'wings-big', 'tail-flame', 'whiskers'] },
   ] },
 ];
 
@@ -86,7 +90,7 @@ export const CREATURES = FAMILIES.flatMap((fam, family) =>
     rarity: fam.rarity,
     family,
     stage,
-    parts: { ...fam.parts, extras: form.extras },
+    parts: { ...fam.parts, ...form.parts, extras: form.extras },
     // Later forms are drawn bigger. A family's last form is always full size.
     size: SIZES[stage + (3 - fam.forms.length)],
   }))
