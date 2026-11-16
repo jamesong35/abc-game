@@ -207,14 +207,14 @@ function choose(btn) {
   }
 }
 
-// The 5 reward pieces: a center square plus four L-shaped corners around it,
+// The 5 reward pieces: a small center square plus four L-shaped corners around it,
 // so every piece covers a visible part of the critter. (Percent coordinates.)
 const PIECE_SHAPES = [
-  'polygon(25% 25%, 75% 25%, 75% 75%, 25% 75%)',                      // center
-  'polygon(0 0, 50% 0, 50% 25%, 25% 25%, 25% 50%, 0 50%)',            // top left
-  'polygon(50% 0, 100% 0, 100% 50%, 75% 50%, 75% 25%, 50% 25%)',      // top right
-  'polygon(100% 50%, 100% 100%, 50% 100%, 50% 75%, 75% 75%, 75% 50%)', // bottom right
-  'polygon(0 50%, 25% 50%, 25% 75%, 50% 75%, 50% 100%, 0 100%)',      // bottom left
+  'polygon(35% 35%, 65% 35%, 65% 65%, 35% 65%)',                      // center
+  'polygon(0 0, 50% 0, 50% 35%, 35% 35%, 35% 50%, 0 50%)',            // top left
+  'polygon(50% 0, 100% 0, 100% 50%, 65% 50%, 65% 35%, 50% 35%)',      // top right
+  'polygon(100% 50%, 100% 100%, 50% 100%, 50% 65%, 65% 65%, 65% 50%)', // bottom right
+  'polygon(0 50%, 35% 50%, 35% 65%, 50% 65%, 50% 100%, 0 100%)',      // bottom left
 ];
 
 // Draw the mystery critter: a black silhouette with the revealed pieces in color on top.
