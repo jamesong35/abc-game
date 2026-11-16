@@ -172,6 +172,9 @@ export function creatureSVG(c) {
     tail.push(`<path d="M134 162 C170 162 174 130 160 108" fill="none" stroke-width="15"/>
       <path d="M134 162 C170 162 174 130 160 108" fill="none" stroke="${t.main}" stroke-width="8"/>`);
   }
+  if (c.parts.tail === 'bolt') {
+    tail.push(`<path d="M128 160 L150 126 L140 124 L164 92 L158 120 L170 122 L140 166 Z" fill="${t.accent}"/>`);
+  }
   if (has('tail-flame')) tail.push(flame(164, 104, 0.9, '#ff4d2e', t.accent));
   if (has('tail-leaf')) tail.push(leaf(156, 112, -70, t.accent));
   if (tail.length) back.push(g(B.tail, tail.join('')));
@@ -250,6 +253,10 @@ export function creatureSVG(c) {
     headBack.push(pair(`<circle cx="62" cy="54" r="18" fill="${t.main}"/>
       <circle cx="62" cy="54" r="9" fill="${t.belly}" stroke="none"/>`));
   }
+  if (ears === 'droopy') {
+    // Puppy ears that fold down the sides of the head.
+    headBack.push(pair(`<path d="M70 48 Q42 44 38 94 Q52 96 82 54 Z" fill="${t.accent}"/>`));
+  }
   if (ears === 'floppy') {
     headBack.push(pair(`<ellipse cx="50" cy="92" rx="24" ry="34" transform="rotate(12 50 92)" fill="${t.main}"/>
       <ellipse cx="52" cy="94" rx="14" ry="22" transform="rotate(12 52 94)" fill="${t.belly}" stroke="none"/>`));
@@ -314,6 +321,7 @@ export function creatureSVG(c) {
   } else if (has('wide-mouth')) {
     headFront.push(`<path d="M78 ${my - 2} Q100 ${my + 16} 122 ${my - 2}" fill="none" stroke-width="3"/>`);
   } else {
+    if (has('tongue')) headFront.push(`<path d="M95 ${my + 3} Q95 ${my + 18} 100 ${my + 18} Q105 ${my + 18} 105 ${my + 3} Z" fill="#ff6b8a" stroke-width="2.5"/>`);
     headFront.push(`<path d="M93 ${my} Q100 ${my + 7} 107 ${my}" fill="none" stroke-width="3"/>`);
   }
   if (has('whiskers')) {

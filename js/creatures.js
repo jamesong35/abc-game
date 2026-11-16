@@ -67,9 +67,9 @@ const FAMILIES = [
     { name: 'Mossling', extras: ['trunk', 'sprout'] },
     { name: 'Mossmammoth', extras: ['trunk', 'tusks', 'flower'] },
   ] },
-  { type: 'spark', rarity: 'rare', parts: { body: 'quad', ears: 'pointy', tail: 'fluffy' }, forms: [
-    { name: 'Sparkpup', extras: ['bolt-mark'] },
-    { name: 'Zapwolf', extras: ['bolt-mark', 'mane'] },
+  { type: 'spark', rarity: 'rare', parts: { body: 'quad', ears: 'droopy', tail: 'bolt' }, forms: [
+    { name: 'Sparkpup', extras: ['bolt-mark', 'tongue'] },
+    { name: 'Zapwolf', extras: ['bolt-mark', 'tongue', 'spikes', 'spots'] },
   ] },
   { type: 'star', rarity: 'super', parts: { body: 'star' }, forms: [
     { name: 'Twinklet', extras: ['star-mark'] },
