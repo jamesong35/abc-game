@@ -2,8 +2,9 @@ import { LETTERS, TILE_COLORS } from './letters.js';
 import { say, speechAvailable } from './speech.js';
 import { chime, boop, fanfare } from './sounds.js';
 import { confetti, replay } from './fx.js';
-import * as rewards from './rewards.js';
-import { TYPES, RARITY, previousForm, numberLabel } from './creatures.js';
+import { letterRewards, wordRewards, PIECES } from './rewards.js';
+import { TYPES, RARITY, numberLabel } from './creatures.js';
+import { WORD_FAMILIES } from './words.js';
 import { creatureSVG } from './creature-art.js';
 
 const $ = (id) => document.getElementById(id);
@@ -19,6 +20,14 @@ function shuffle(arr) {
   }
   return a;
 }
+
+// 'letters' (Find the Letter) or 'words' (Find the Word). Both share this screen.
+let mode = 'letters';
+const rewards = () => (mode === 'words' ? wordRewards : letterRewards);
+
+// Find the Word plays 5 words from one family (cat, hat, bat…) per critter.
+let family = null;
+let wordQueue = [];
 
 let letterCase = readCase();
 let target = null;
@@ -47,6 +56,7 @@ export function initFind() {
     b.addEventListener('click', () => start(b.dataset.case)));
   $('prompt').addEventListener('click', sayTarget);
   $('play-again').addEventListener('click', () => {
+    wordQueue = [];
     $('complete').hidden = true;
     $('game').hidden = false;
     renderReveal();
@@ -55,11 +65,23 @@ export function initFind() {
   updateCaseButtons();
 }
 
-// Called each time the Find screen opens.
-export function enterFind() {
+// Called each time the Find screen opens, for either level.
+export function enterFind(m = 'letters') {
   clearTimeout(timer);
   busy = false;
+  mode = m;
+  const words = mode === 'words';
+  $('find-title').textContent = words ? 'Find the Word' : 'Find the Letter';
+  document.querySelector('#find .case-toggle').hidden = words;
   $('complete').hidden = true;
+  if (words) {
+    wordQueue = [];
+    $('case-chooser').hidden = true;
+    $('game').hidden = false;
+    renderReveal();
+    newRound();
+    return;
+  }
   $('game').hidden = true;
   $('case-chooser').hidden = false;
   updateCaseButtons();
@@ -87,45 +109,74 @@ function start(c) {
   newRound();
 }
 
-function newRound() {
-  busy = false;
+// Start a new word family: 5 different target words from it, never the
+// same family twice in a row.
+function nextFamily() {
+  const others = WORD_FAMILIES.filter((f) => f !== family);
+  family = randomItem(others);
+  wordQueue = shuffle(family.words.map((w) => w.word)).slice(0, PIECES);
+}
+
+function letterChoices() {
   const all = LETTERS.map((l) => l.letter);
   do { target = randomItem(all); } while (target === lastTarget);
   lastTarget = target;
+  return shuffle([target, ...shuffle(all.filter((l) => l !== target)).slice(0, 3)]).map((L) => ({
+    value: L,
+    text: shown(L),
+    emoji: LETTERS.find((l) => l.letter === L).emoji,
+    label: `${sizeWord()} ${L}`,
+  }));
+}
 
-  const choices = shuffle([target, ...shuffle(all.filter((l) => l !== target)).slice(0, 3)]);
+function wordChoices() {
+  if (!wordQueue.length) nextFamily();
+  target = wordQueue.shift();
+  const others = shuffle(family.words.filter((w) => w.word !== target)).slice(0, 3);
+  const picks = [family.words.find((w) => w.word === target), ...others];
+  return shuffle(picks).map((w) => ({ value: w.word, text: w.word, emoji: w.emoji || '', label: w.word }));
+}
+
+function newRound() {
+  busy = false;
+  const words = mode === 'words';
+  const choices = words ? wordChoices() : letterChoices();
   const box = $('choices');
   box.innerHTML = '';
-  choices.forEach((L, i) => {
+  choices.forEach((ch, i) => {
     const b = document.createElement('button');
-    b.className = 'tile choice';
+    b.className = words ? 'tile choice word' : 'tile choice';
     b.style.setProperty('--c', TILE_COLORS[i]);
-    const letter = document.createElement('span');
-    letter.className = 'choice-letter';
-    letter.textContent = shown(L);
+    const text = document.createElement('span');
+    text.className = 'choice-letter';
+    text.textContent = ch.text;
+    // In Find the Word the picture stays hidden until the word is found,
+    // so kids read the word instead of matching the picture.
     const pic = document.createElement('span');
     pic.className = 'choice-emoji';
     pic.setAttribute('aria-hidden', 'true');
-    pic.textContent = LETTERS.find((l) => l.letter === L).emoji;
-    b.append(letter, pic);
-    b.dataset.letter = L;
-    b.setAttribute('aria-label', `${sizeWord()} ${L}`);
+    pic.textContent = ch.emoji;
+    b.append(text, pic);
+    b.dataset.letter = ch.value;
+    b.setAttribute('aria-label', ch.label);
     b.addEventListener('click', () => choose(b));
     box.append(b);
   });
 
-  // The game is about hearing a letter's name. If this device can't speak,
-  // show the letter instead so it's still playable.
+  // The game is about hearing the letter or word. If this device can't speak,
+  // show it instead so it's still playable.
   $('prompt-text').innerHTML = speechAvailable()
     ? 'Listen'
-    : `Find <span class="target">${shown(target)}</span>`;
+    : `Find <span class="target">${words ? target : shown(target)}</span>`;
   later(() => sayTarget(true), 350);
 }
 
-// The first time in a round: "Find the letter A!". After that, the Listen
-// button just says the letter.
+// The first time in a round: "Find the letter A!" or "Find the word cat!".
+// After that, the Listen button just says the letter or word.
 function sayTarget(full) {
-  if (playing() && target) say(full === true ? `Find the letter ${target}!` : `${target}!`);
+  if (!playing() || !target) return;
+  const kind = mode === 'words' ? 'word' : 'letter';
+  say(full === true ? `Find the ${kind} ${target}!` : `${target}!`);
 }
 
 function choose(btn) {
@@ -135,15 +186,16 @@ function choose(btn) {
   if (L !== target) {
     replay(btn, 'wrong');
     boop();
-    say(`That's the letter ${L}. Try again!`);
+    say(`That's the ${mode === 'words' ? 'word' : 'letter'} ${L}. Try again!`);
     return;
   }
 
   busy = true;
   btn.classList.add('correct');
+  btn.querySelector('.choice-emoji').classList.add('show');
   chime();
   confetti(btn);
-  const result = rewards.addPiece();
+  const result = rewards().addPiece();
   renderReveal(result);
 
   if (result.complete) {
@@ -170,8 +222,8 @@ const PIECE_SHAPES = [
 function renderReveal(result) {
   const done = result?.complete;
   const { creature, pieces } = done
-    ? { creature: result.creature, pieces: [...Array(rewards.PIECES).keys()] }
-    : rewards.current();
+    ? { creature: result.creature, pieces: [...Array(PIECES).keys()] }
+    : rewards().current();
   const art = creatureSVG(creature);
 
   const box = $('reveal');
@@ -181,7 +233,7 @@ function renderReveal(result) {
   sil.innerHTML = art;
   box.append(sil);
 
-  for (let i = 0; i < rewards.PIECES; i++) {
+  for (let i = 0; i < PIECES; i++) {
     const piece = document.createElement('div');
     piece.className = 'layer piece';
     piece.innerHTML = art;
@@ -193,12 +245,12 @@ function renderReveal(result) {
 
   const dots = $('dots');
   dots.innerHTML = '';
-  for (let i = 0; i < rewards.PIECES; i++) {
+  for (let i = 0; i < PIECES; i++) {
     const d = document.createElement('span');
     if (i < pieces.length) d.className = 'on';
     dots.append(d);
   }
-  box.setAttribute('aria-label', `Mystery critter, ${pieces.length} of ${rewards.PIECES} pieces found`);
+  box.setAttribute('aria-label', `Mystery critter, ${pieces.length} of ${PIECES} pieces found`);
 }
 
 function celebrate({ creature: c, firstTime, justFoundAll }) {
@@ -206,7 +258,7 @@ function celebrate({ creature: c, firstTime, justFoundAll }) {
   $('game').hidden = true;
   $('complete').hidden = false;
 
-  const prev = firstTime ? previousForm(c) : null;
+  const prev = firstTime ? rewards().set.previousForm(c) : null;
   const big = $('complete-animal');
   big.innerHTML = prev
     ? `<div class="evo-prev">${creatureSVG(prev)}</div><span class="evo-arrow" aria-hidden="true">➜</span><div class="evo-new">${creatureSVG(c)}</div>`
@@ -224,6 +276,7 @@ function celebrate({ creature: c, firstTime, justFoundAll }) {
   meta.textContent = `${numberLabel(c)} · ${type.icon} ${type.label} type${rarity}`;
   meta.className = `meta ${c.rarity}`;
   $('complete-all').hidden = !justFoundAll;
+  $('see-critters').dataset.tab = mode;
 
   fanfare();
   confetti(big, c.rarity === 'common' ? 40 : 80);

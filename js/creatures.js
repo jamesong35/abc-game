@@ -10,6 +10,9 @@ export const TYPES = {
   rock:  { label: 'Rock',  icon: '🪨', main: '#b08968', belly: '#ecd5bd', accent: '#7f5539' },
   frost: { label: 'Frost', icon: '❄️', main: '#a8e6f0', belly: '#f2fcff', accent: '#4fb6d3' },
   star:  { label: 'Star',  icon: '✨', main: '#b388ff', belly: '#f3e7ff', accent: '#ff7ccf' },
+  bloom: { label: 'Bloom', icon: '🌸', main: '#ff8fc7', belly: '#ffe6f2', accent: '#ffd23f' },
+  moon:  { label: 'Moon',  icon: '🌙', main: '#6c70b8', belly: '#e4e2ff', accent: '#ffd23f' },
+  sand:  { label: 'Sand',  icon: '🏜️', main: '#e9b872', belly: '#fff1d6', accent: '#d1773b' },
 };
 
 export const RARITY = {
@@ -22,7 +25,7 @@ export const RARITY = {
 // (beetle shell), bird (egg), boulder, pear (big bottom), fish, quad (four
 // legs), star and serpent. A form can change its family's parts, so a critter
 // can change shape when it evolves.
-const FAMILIES = [
+const LETTER_FAMILIES = [
   { type: 'fire', rarity: 'common', parts: { body: 'chibi', ears: 'pointy', tail: 'fluffy' }, forms: [
     { name: 'Embit', extras: ['flame-tuft'] },
     { name: 'Flarefox', extras: ['flame-tuft', 'tail-flame'] },
@@ -82,22 +85,30 @@ const FAMILIES = [
 
 const SIZES = [0.78, 0.9, 1];
 
-export const CREATURES = FAMILIES.flatMap((fam, family) =>
-  fam.forms.map((form, stage) => ({
-    id: form.name.toLowerCase(),
-    name: form.name,
-    type: fam.type,
-    rarity: fam.rarity,
-    family,
-    stage,
-    parts: { ...fam.parts, ...form.parts, extras: form.extras },
-    // Later forms are drawn bigger. A family's last form is always full size.
-    size: SIZES[stage + (3 - fam.forms.length)],
-  }))
-).map((c, i) => ({ ...c, num: i + 1 }));
+// Turns a list of families into a numbered critter set with lookups.
+export function buildSet(families) {
+  const creatures = families.flatMap((fam, family) =>
+    fam.forms.map((form, stage) => ({
+      id: form.name.toLowerCase(),
+      name: form.name,
+      type: fam.type,
+      rarity: fam.rarity,
+      family,
+      stage,
+      parts: { ...fam.parts, ...form.parts, extras: form.extras },
+      // Later forms are drawn bigger. A family's last form is always full size.
+      size: SIZES[stage + (3 - fam.forms.length)],
+    }))
+  ).map((c, i) => ({ ...c, num: i + 1 }));
 
-export const FAMILY_COUNT = FAMILIES.length;
-export const byId = (id) => CREATURES.find((c) => c.id === id);
-export const previousForm = (c) =>
-  CREATURES.find((p) => p.family === c.family && p.stage === c.stage - 1) || null;
+  return {
+    creatures,
+    familyCount: families.length,
+    byId: (id) => creatures.find((c) => c.id === id),
+    previousForm: (c) => creatures.find((p) => p.family === c.family && p.stage === c.stage - 1) || null,
+  };
+}
+
+// The critters found in Find the Letter.
+export const LETTER_SET = buildSet(LETTER_FAMILIES);
 export const numberLabel = (c) => `#${String(c.num).padStart(3, '0')}`;

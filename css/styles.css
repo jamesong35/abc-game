@@ -71,14 +71,19 @@ button:focus-visible { outline: 4px solid var(--ink); outline-offset: 3px; }
 
 .home-buttons {
   display: grid;
-  gap: 16px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
   width: 100%;
   max-width: 520px;
   margin: 0 auto;
 }
+.home-buttons .big-btn { min-height: clamp(110px, 22dvh, 150px); padding: 12px; line-height: 1.1; }
 @media (min-width: 768px) {
-  .home-buttons { grid-template-columns: repeat(3, 1fr); max-width: none; }
-  .home-buttons .big-btn { min-height: 200px; }
+  .home-buttons { max-width: 760px; gap: 20px; }
+  .home-buttons .big-btn { min-height: clamp(150px, 24dvh, 220px); }
+}
+@media (min-width: 1100px) {
+  .home-buttons { grid-template-columns: repeat(4, 1fr); max-width: none; }
 }
 
 .big-btn {
@@ -311,6 +316,12 @@ button:focus-visible { outline: 4px solid var(--ink); outline-offset: 3px; }
 .choice { flex-direction: column; gap: 4px; }
 .choice-letter { font-size: clamp(56px, 13vw, 104px); line-height: 1; }
 .choice-emoji { font-size: clamp(28px, 7vw, 52px); line-height: 1; }
+/* Find the Word: smaller text so 3-letter words fit, and the picture stays
+   hidden (but keeps its space) until the word is found. */
+.choice.word .choice-letter { font-size: clamp(36px, 7.5vw, 76px); }
+.choice.word .choice-emoji { visibility: hidden; min-height: 1em; }
+.choice.word .choice-emoji.show { visibility: visible; animation: bounce-in 0.6s ease-out; }
+@media (max-width: 599px) { .choice.word .choice-letter { font-size: clamp(34px, 7dvh, 64px); } }
 .choice.correct { background: var(--green); animation: bounce 0.6s; }
 .choice.wrong { animation: wiggle 0.45s; }
 
@@ -341,7 +352,26 @@ button:focus-visible { outline: 4px solid var(--ink); outline-offset: 3px; }
 #complete-text { font-size: clamp(30px, 6vw, 48px); font-weight: 800; }
 .complete .big-btn { min-width: 260px; }
 
-/* ---------- My Animals ---------- */
+/* ---------- My Critters ---------- */
+.set-tabs {
+  display: flex;
+  gap: 4px;
+  align-self: center;
+  background: var(--card);
+  border-radius: 999px;
+  padding: 4px;
+  box-shadow: var(--shadow);
+}
+.set-tabs button {
+  min-height: 52px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: transparent;
+  font-size: clamp(16px, 4vw, 22px);
+  font-weight: 800;
+}
+.set-tabs button.on { background: var(--teal); color: #fff; }
+.set-tabs .tab-count { opacity: 0.75; font-size: 0.85em; }
 .count { margin: 0; text-align: center; font-size: clamp(24px, 5vw, 32px); font-weight: 800; }
 .animal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 @media (min-width: 600px) { .animal-grid { grid-template-columns: repeat(4, 1fr); } }

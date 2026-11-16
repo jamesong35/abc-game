@@ -38,7 +38,7 @@ const BODIES = {
     spots: [[80, 140, 6], [120, 150, 5]],
   },
   blob: {
-    head: { dx: 0, dy: 22, s: 1.25 },
+    head: { dx: 0, dy: 22, s: 1.25 }, tail: 'translate(28 4)',
     draw: (t) => `<ellipse cx="76" cy="174" rx="15" ry="9" fill="${t.main}"/>
       <ellipse cx="124" cy="174" rx="15" ry="9" fill="${t.main}"/>
       <ellipse cx="100" cy="118" rx="66" ry="58" fill="${t.main}"/>
@@ -57,6 +57,7 @@ const BODIES = {
   // A round beetle shell with six legs and a little head on top.
   bug: {
     head: { dx: 0, dy: -14, s: 0.75 }, round: true,
+    stripes: 'M48 118 Q100 134 152 118 M58 148 Q100 162 142 148 M72 172 Q100 182 128 172',
     back: () => pair(`<path d="M56 116 L30 104 M52 140 L24 142 M58 164 L34 180" fill="none" stroke-width="6"/>`),
     draw: (t) => `<ellipse cx="100" cy="130" rx="54" ry="54" fill="${t.main}"/>
       <path d="M100 96 L100 182" fill="none" stroke-width="3"/>`,
@@ -123,6 +124,98 @@ const BODIES = {
       <circle cx="100" cy="126" r="28" fill="${t.belly}" stroke="none"/>`,
     spots: [[44, 92, 5], [156, 92, 5], [66, 166, 5], [134, 166, 5]],
   },
+  // A snail: a big spiral shell on a long foot, head out in front.
+  snail: {
+    head: { dx: -44, dy: 26, s: 0.68 }, round: true,
+    draw: (t) => `<path d="M26 184 Q22 150 50 140 L150 150 Q188 158 186 184 Z" fill="${t.main}"/>
+      <circle cx="124" cy="116" r="52" fill="${t.accent}"/>
+      <path d="M124 116 a7 7 0 1 1 14 0 a14 14 0 1 1 -28 0 a21 21 0 1 1 42 0 a28 28 0 1 1 -56 0 a35 35 0 1 1 70 0" fill="none"/>`,
+    spots: [[100, 82, 6], [160, 140, 6], [92, 150, 5]], spotFill: (t) => t.belly,
+  },
+  // A jellyfish: a round dome with wavy tentacles.
+  jelly: {
+    head: { dx: 0, dy: 4, s: 1.1 },
+    back: (t) => [62, 82, 100, 118, 138].map((x, i) => {
+      const d = `M${x} 116 q${i % 2 ? 8 : -8} 16 0 32 q${i % 2 ? -8 : 8} 16 0 32`;
+      return `<path d="${d}" fill="none" stroke-width="12"/><path d="${d}" fill="none" stroke="${t.belly}" stroke-width="6"/>`;
+    }).join(''),
+    draw: (t) => `<path d="M32 124 Q32 44 100 44 Q168 44 168 124 Q151 136 134 124 Q117 136 100 124 Q83 136 66 124 Q49 136 32 124 Z" fill="${t.main}"/>
+      <ellipse cx="70" cy="70" rx="13" ry="7" transform="rotate(-30 70 70)" fill="#ffffff" fill-opacity="0.6" stroke="none"/>`,
+    spots: [[56, 98, 6], [146, 96, 6], [128, 60, 4]], spotFill: (t) => t.belly,
+  },
+  // A mushroom: a wide cap over a stem with a face.
+  mushroom: {
+    head: { dx: 0, dy: 48, s: 0.85 },
+    draw: (t) => `<path d="M66 98 L134 98 Q146 150 140 186 L60 186 Q54 150 66 98 Z" fill="${t.belly}"/>
+      <path d="M16 104 Q18 24 100 22 Q182 24 184 104 Q100 122 16 104 Z" fill="${t.main}"/>`,
+    spots: [[58, 66, 10], [100, 42, 9], [142, 66, 10], [82, 92, 6], [120, 92, 6]], spotFill: () => '#ffffff',
+  },
+  // A turtle: a domed shell on four stubby legs, head out in front.
+  turtle: {
+    head: { dx: -50, dy: 32, s: 0.66 }, round: true,
+    draw: (t) => `<ellipse cx="66" cy="176" rx="13" ry="11" fill="${t.main}"/>
+      <ellipse cx="96" cy="180" rx="13" ry="10" fill="${t.main}"/>
+      <ellipse cx="136" cy="180" rx="13" ry="10" fill="${t.main}"/>
+      <ellipse cx="164" cy="176" rx="13" ry="11" fill="${t.main}"/>
+      <path d="M180 160 L196 166 L180 170 Z" fill="${t.main}"/>
+      <path d="M44 164 Q46 80 116 78 Q186 80 188 164 Z" fill="${t.accent}"/>
+      <path d="M100 108 L132 108 L146 134 L132 160 L100 160 L86 134 Z M100 108 L84 84 M132 108 L148 84 M86 134 L50 134 M146 134 L184 134" fill="none" stroke-width="3"/>
+      <rect x="40" y="158" width="152" height="12" rx="6" fill="${t.belly}"/>`,
+    spots: [[68, 112, 6], [164, 112, 6], [116, 92, 5]], spotFill: (t) => t.belly,
+  },
+  // An octopus: a big round head with six curly arms.
+  octo: {
+    head: { dx: 0, dy: -2, s: 1.2 },
+    back: (t) => {
+      const arms = ['M64 116 C44 150 30 170 16 166 C6 162 10 150 20 154',
+        'M78 128 C70 160 60 180 46 184 C36 186 36 174 46 174',
+        'M94 134 C96 160 92 178 82 188 C74 194 70 182 78 180'];
+      const one = arms.map((d) => `<path d="${d}" fill="none" stroke-width="20"/><path d="${d}" fill="none" stroke="${t.main}" stroke-width="13"/>`).join('');
+      return pair(one);
+    },
+    draw: (t) => `<circle cx="100" cy="86" r="56" fill="${t.main}"/>`,
+    spots: [[62, 62, 6], [140, 58, 7], [152, 96, 5]],
+  },
+  // A puffy cloud.
+  cloud: {
+    head: { dx: 0, dy: 30, s: 1 },
+    draw: (t) => {
+      const puffs = [[54, 132, 32], [84, 100, 38], [124, 94, 40], [154, 128, 30], [100, 142, 40]];
+      return puffs.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${t.main}" stroke-width="7"/>`).join('')
+        + puffs.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${t.main}" stroke="none"/>`).join('');
+    },
+    spots: [[150, 110, 5], [70, 110, 4]], spotFill: () => '#ffffff',
+  },
+  // A cactus: a tall rounded column with two arms.
+  cactus: {
+    head: { dx: 0, dy: 22, s: 0.9 },
+    back: (t) => ['M64 120 L46 120 Q38 120 38 112 L38 86', 'M136 136 L154 136 Q162 136 162 128 L162 104']
+      .map((d) => `<path d="${d}" fill="none" stroke-width="22"/><path d="${d}" fill="none" stroke="${t.main}" stroke-width="15"/>`).join(''),
+    draw: (t) => `<rect x="62" y="48" width="76" height="140" rx="38" fill="${t.main}"/>
+      <path d="M82 70 L82 180 M118 70 L118 180" fill="none" stroke="${t.accent}" stroke-width="3" opacity="0.5"/>`,
+    spots: [[72, 72, 2.5], [128, 66, 2.5], [70, 150, 2.5], [130, 160, 2.5], [100, 180, 2.5], [72, 116, 2.5], [130, 110, 2.5], [38, 92, 2.5], [162, 112, 2.5]],
+    spotFill: () => OUT,
+  },
+  // A crab: a wide shell, big claws and little legs.
+  crab: {
+    head: { dx: 0, dy: 40, s: 0.95 },
+    back: (t) => pair(`<path d="M52 150 L24 164 M58 162 L34 182 M72 170 L58 190" fill="none" stroke-width="6"/>
+      <path d="M58 118 Q34 106 34 84" fill="none" stroke-width="14"/><path d="M58 118 Q34 106 34 84" fill="none" stroke="${t.main}" stroke-width="8"/>
+      <path d="M34 48 Q10 50 12 76 Q16 94 36 92 L28 74 L48 66 Q48 50 34 48 Z" fill="${t.main}"/>`),
+    draw: (t) => `<ellipse cx="100" cy="134" rx="66" ry="42" fill="${t.main}"/>
+      <ellipse cx="100" cy="152" rx="40" ry="18" fill="${t.belly}" stroke="none"/>`,
+    spots: [[56, 124, 6], [144, 124, 6], [100, 98, 5]],
+  },
+  // A seal lying down, with flippers.
+  seal: {
+    head: { dx: -22, dy: 26, s: 0.95 }, round: true,
+    back: (t) => `<ellipse cx="178" cy="140" rx="18" ry="9" transform="rotate(-30 178 140)" fill="${t.main}"/>
+      <ellipse cx="180" cy="160" rx="18" ry="9" transform="rotate(20 180 160)" fill="${t.main}"/>`,
+    draw: (t) => `<ellipse cx="112" cy="148" rx="66" ry="36" fill="${t.main}"/>
+      <ellipse cx="116" cy="164" rx="44" ry="16" fill="${t.belly}" stroke="none"/>
+      <ellipse cx="96" cy="182" rx="20" ry="8" transform="rotate(16 96 182)" fill="${t.main}"/>`,
+    spots: [[128, 128, 6], [152, 146, 5], [140, 120, 4]],
+  },
   // A long, curled-up dragon.
   serpent: {
     head: { dx: 0, dy: -14, s: 0.82 }, round: true,
@@ -175,6 +268,7 @@ export function creatureSVG(c) {
   if (c.parts.tail === 'bolt') {
     tail.push(`<path d="M128 160 L150 126 L140 124 L164 92 L158 120 L170 122 L140 166 Z" fill="${t.accent}"/>`);
   }
+  if (c.parts.tail === 'puff') tail.push(`<circle cx="142" cy="166" r="15" fill="${t.belly}"/>`);
   if (has('tail-flame')) tail.push(flame(164, 104, 0.9, '#ff4d2e', t.accent));
   if (has('tail-leaf')) tail.push(leaf(156, 112, -70, t.accent));
   if (tail.length) back.push(g(B.tail, tail.join('')));
@@ -210,10 +304,35 @@ export function creatureSVG(c) {
     }
   }
   if (has('dorsal')) back.push(B.dorsal ? B.dorsal(t) : `<path d="M78 66 Q98 22 126 68 Z" fill="${t.accent}"/>`);
+  if (has('back-spikes')) {
+    // Plates along the top of a four-legged body.
+    for (const x of [96, 120, 144]) {
+      const y = 134 - 36 * Math.sqrt(1 - ((x - 114) / 60) ** 2);
+      back.push(`<polygon points="${x - 11},${(y + 8).toFixed(1)} ${x},${(y - 18).toFixed(1)} ${x + 11},${(y + 8).toFixed(1)}" fill="${t.accent}"/>`);
+    }
+  }
+  if (has('rain')) {
+    for (const [x, y] of [[40, 178], [160, 176], [24, 154]]) {
+      back.push(`<path d="M${x} ${y - 11} Q${x + 8} ${y} ${x} ${y + 7} Q${x - 8} ${y} ${x} ${y - 11} Z" fill="#4aa8ff" stroke-width="2.5"/>`);
+    }
+  }
   if (B.back) back.push(B.back(t));
 
   // ---------- Behind the head ----------
   if (has('mane')) headBack.push(`<polygon points="${starPoints(100, 88, 68, 46, 14)}" fill="${t.accent}"/>`);
+  if (has('petals')) {
+    for (let i = 0; i < 10; i++) {
+      const a = (360 * i) / 10;
+      headBack.push(`<ellipse cx="100" cy="${88 - 52}" rx="15" ry="22" transform="rotate(${a} 100 88)" fill="${t.accent}"/>`);
+    }
+  }
+  if (has('rainbow-mane')) {
+    const colors = ['#ff6b6b', '#ff9f1c', '#ffd23f', '#5cc96b', '#4aa8ff', '#b388ff'];
+    colors.forEach((col, i) => {
+      const a = ((-70 + i * 26) * Math.PI) / 180;
+      headBack.push(`<circle cx="${(100 + 46 * Math.cos(a)).toFixed(1)}" cy="${(88 + 46 * Math.sin(a)).toFixed(1)}" r="15" fill="${col}"/>`);
+    });
+  }
   if (has('antennae')) {
     headBack.push(pair(`<path d="M88 ${top + 8} Q82 ${top - 18} 68 ${top - 26}" fill="none"/>
       <circle cx="68" cy="${top - 26}" r="7" fill="${t.accent}"/>`));
@@ -264,13 +383,16 @@ export function creatureSVG(c) {
 
   // ---------- Body ----------
   body.push(B.draw(t));
+  if (has('stripes') && B.stripes) body.push(`<path d="${B.stripes}" fill="none" stroke-width="11"/>`);
   if (has('scarf')) {
     headFront.push(`<path d="M114 132 L128 166 L110 162 Z" fill="${t.accent}"/>
       <path d="M62 124 Q100 142 138 124 L138 136 Q100 154 62 136 Z" fill="${t.accent}"/>`);
   }
   if (B.round) headFront.push(`<circle cx="100" cy="88" r="46" fill="${t.main}"/>`);
   if (has('spots')) {
-    bodyFront.push(B.spots.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${t.accent}" stroke="none"/>`).join(''));
+    const fill = B.spotFill ? B.spotFill(t) : t.accent;
+    // Spots on a mushroom cap go under its face; everywhere else they sit on top.
+    (B.spotFill ? body : bodyFront).push(B.spots.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="none"/>`).join(''));
   }
 
   // ---------- On the head ----------
@@ -297,6 +419,9 @@ export function creatureSVG(c) {
       <path d="M100 ${m - 10} L100 ${m + 10}"/><path d="M91 ${m - 5} L109 ${m + 5}"/><path d="M91 ${m + 5} L109 ${m - 5}"/></g>`);
   }
   if (has('star-mark')) headFront.push(`<polygon points="${starPoints(100, m, 11, 4.8, 5)}" fill="#ffe066" stroke-width="2.5"/>`);
+  if (has('moon-mark')) {
+    headFront.push(`<path d="M104 ${m - 12} A12 12 0 1 0 104 ${m + 12} A9 9 0 1 1 104 ${m - 12} Z" fill="#ffe066" stroke-width="2.5"/>`);
+  }
   if (has('bolt-mark')) {
     headFront.push(`<path d="M103 ${m - 13} L91 ${m + 2} L100 ${m + 2} L96 ${m + 15} L109 ${m - 2} L100 ${m - 2} Z" fill="${t.accent}" stroke-width="2.5"/>`);
   }
@@ -305,6 +430,7 @@ export function creatureSVG(c) {
   headFront.push(`<ellipse cx="${100 - R.cheekX}" cy="${R.cheekY}" rx="8" ry="5" fill="#ff8fab" fill-opacity="0.6" stroke="none"/>
     <ellipse cx="${100 + R.cheekX}" cy="${R.cheekY}" rx="8" ry="5" fill="#ff8fab" fill-opacity="0.6" stroke="none"/>`);
   for (const [x, y] of eyes) {
+    if (has('owl-eyes')) headFront.push(`<circle cx="${x}" cy="${y}" r="15" fill="#ffffff" stroke-width="3"/>`);
     headFront.push(`<circle cx="${x}" cy="${y}" r="9" fill="${OUT}" stroke="none"/>
       <circle cx="${x - 3}" cy="${y - 3}" r="3.4" fill="#fff" stroke="none"/>`);
   }

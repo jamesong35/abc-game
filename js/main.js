@@ -5,25 +5,28 @@ import { say, stopSpeech, unlockSpeech } from './speech.js';
 import { unlockAudio } from './sounds.js';
 import { debug } from './rewards.js';
 
-function go(name) {
+function go(name, tab) {
   const leaving = document.querySelector('.screen.active');
   if (leaving?.id === 'find') leaveFind();
   stopSpeech();
 
-  document.querySelectorAll('.screen').forEach((s) => s.classList.toggle('active', s.id === name));
+  // Find the Letter and Find the Word share the Find screen.
+  const screen = name === 'words' ? 'find' : name;
+  document.querySelectorAll('.screen').forEach((s) => s.classList.toggle('active', s.id === screen));
   window.scrollTo(0, 0);
 
   if (name === 'explore') { resetExplore(); say('Tap a letter!'); }
-  if (name === 'find') enterFind();
+  if (name === 'find') enterFind('letters');
+  if (name === 'words') enterFind('words');
   if (name === 'collection') {
-    const n = renderCollection();
-    say(n ? `You have ${n} ${n === 1 ? 'critter' : 'critters'}!` : 'Play Find the Letter to find critters!');
+    const n = renderCollection(tab);
+    say(n ? `You have ${n} ${n === 1 ? 'critter' : 'critters'}!` : 'Play a game to find critters!');
   }
 }
 
 document.addEventListener('click', (e) => {
   const link = e.target.closest('[data-go]');
-  if (link) go(link.dataset.go);
+  if (link) go(link.dataset.go, link.dataset.tab);
 });
 
 // Speech and sound need one tap before iOS will play them.
@@ -36,5 +39,5 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 
-// For testing from the browser console, e.g. abcDebug.setPieces(4)
+// For testing from the browser console, e.g. abcDebug.words.setPieces(4)
 window.abcDebug = debug;
