@@ -63,7 +63,7 @@ export function enterFind() {
   $('game').hidden = true;
   $('case-chooser').hidden = false;
   updateCaseButtons();
-  say('Pick big letters or little letters!');
+  say('Pick your letters!');
 }
 
 export function leaveFind() {
