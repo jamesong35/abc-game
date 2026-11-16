@@ -1,6 +1,6 @@
 // Offline support. Network first (so updates show up right away),
 // falling back to the saved copy when there's no connection.
-const CACHE = 'abc-game-v2';
+const CACHE = 'abc-game-v3';
 const SHELL = [
   './',
   'index.html',
@@ -18,6 +18,8 @@ const SHELL = [
   'js/creature-art.js',
   'manifest.webmanifest',
   'icons/icon.svg',
+  'icons/icon-192.png',
+  'icons/apple-touch-icon.png',
 ];
 
 self.addEventListener('install', (e) => {
