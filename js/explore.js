@@ -88,7 +88,7 @@ function speak() {
     const Word = word[0].toUpperCase() + word.slice(1);
     // Spell with capitals so the voice says the letter names, then pause a
     // beat before saying the word again.
-    sayWithPause(`${Word}! ${word.toUpperCase().split('').join(', ')}.`, `${Word}!`, 1000);
+    sayWithPause(`${Word}! ${word.toUpperCase().split('').join(', ')}.`, `${Word}!`, 500);
   } else {
     const { letter, word } = LETTERS[index];
     say(`${letter}! ${letter} is for ${word}.`);
